@@ -259,27 +259,33 @@
         </div>
       </div>
     </div>
-
-    <!-- Global Toast Message -->
-    <div id="toastMsg" class="toast-msg">
-      <span class="toast-text">Notifikasi</span>
-    </div>
-
-    <!-- Application Script (Modular app.js & ServiceWorker Register) -->
-    <script src="./app.js"></script>
-    <script>
-      // Service Worker Registration for PWA
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('./sw.js')
-            .then(function(reg) {
-              console.log('PWA ServiceWorker registered with scope:', reg.scope);
-            })
-            .catch(function(err) {
-              console.warn('PWA ServiceWorker registration failed:', err);
-            });
-        });
-      }
-    </script>
-  </body>
+<!-- Firebase PUBLIC FINAL -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyA-rV7clVtKcpKHZO75ugwCjJ_nzqNjRsY",
+    authDomain: "lost-found-id-7298c.firebaseapp.com",
+    projectId: "lost-found-id-7298c",
+    storageBucket: "lost-found-id-7298c.firebasestorage.app",
+    messagingSenderId: "392846041166",
+    appId: "1:392846041166:web:12d9378539e636c81be31f"
+  };
+  const app = initializeApp(firebaseConfig);
+  window._DB = getFirestore(app);
+  window._FB = { collection, addDoc, doc, updateDoc, onSnapshot, query, orderBy };
+</script>
+<script type="module" src="./app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./sw.js').then(function(reg) {
+        console.log('PWA ServiceWorker');
+      }).catch(function(err) {
+        console.warn('PWA ServiceWorker failed', err);
+      });
+    });
+  }
+</script>
+</body>
 </html>
