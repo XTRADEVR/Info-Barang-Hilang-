@@ -1,86 +1,100 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lost & Found ID - Pro Fix V3</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lost & Found ID - Maps & WA</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#0f172a;color:white;padding:16px;padding-bottom:90px}
-.header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}
-.card-stat{background:#1e293b;border-radius:12px;padding:12px;text-align:center;border:1px solid #334155}
-.card-stat b{font-size:24px;display:block}
-.search{width:100%;padding:14px;border-radius:12px;border:1px solid #334155;background:#1e293b;color:white;margin-bottom:12px}
-.filters{display:flex;gap:8px;overflow:auto;margin-bottom:12px}
-.filters button{padding:8px 16px;border-radius:20px;border:1px solid #334155;background:#1e293b;color:white}
-.filters .active{background:#3b82f6!important}
-.item{background:#1e293b;border-radius:14px;padding:14px;margin-bottom:12px;display:flex;gap:12px;border:1px solid #334155}
-.item img{width:70px;height:70px;border-radius:10px;object-fit:cover}
-.fab{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#3b82f6;padding:15px 28px;border-radius:30px;border:none;color:white;font-weight:bold;z-index:10}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:999;padding:16px}
-.modal.show{display:flex}
-.modal-box{background:#1e293b;width:100%;max-width:420px;border-radius:20px;padding:20px;border:1px solid #334155}
-.modal-box input,.modal-box select,.modal-box textarea{width:100%;padding:12px;margin:7px 0;border-radius:10px;border:1px solid #334155;background:#0f172a;color:white}
-.modal-box button{width:100%;padding:13px;border-radius:10px;border:none;margin-top:8px;font-weight:bold}
-.btn-blue{background:#3b82f6;color:white} .btn-gray{background:#334155;color:white}
-.btn-red{background:#ef4444;color:white;margin-top:30px}
-.badge{font-size:11px;padding:5px 10px;border-radius:12px;font-weight:bold}
-.b-hilang{background:#ef4444} .b-temu{background:#22c55e}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#0f172a;color:#fff;padding:16px;padding-bottom:90px}
+.h{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.st{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:12px;text-align:center}
+.st b{font-size:22px;display:block}
+.search{width:100%;padding:14px;border-radius:12px;border:1px solid #334155;background:#1e293b;color:#fff;margin-bottom:10px}
+.f{display:flex;gap:8px;overflow:auto;margin-bottom:12px}
+.f button{padding:8px 14px;border-radius:20px;border:1px solid #334155;background:#1e293b;color:#fff;white-space:nowrap}
+.f .a{background:#3b82f6!important}
+.item{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:14px;display:flex;gap:12px;margin-bottom:12px}
+.item img{width:64px;height:64px;border-radius:10px;object-fit:cover;background:#334155}
+.link{color:#60a5fa;text-decoration:none;font-weight:600} .link:hover{text-decoration:underline}
+.link-wa{color:#22c55e}
+.fab{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#3b82f6;padding:14px 26px;border-radius:30px;border:none;color:#fff;font-weight:700;box-shadow:0 10px 30px rgba(59,130,246,.5)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
+.modal.s{display:flex} .box{background:#1e293b;width:100%;max-width:420px;border-radius:18px;padding:18px;border:1px solid #334155;max-height:90vh;overflow:auto}
+.box input,.box select,.box textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff}
+.badge{font-size:11px;padding:4px 8px;border-radius:10px;font-weight:700} .bh{background:#ef4444} .bt{background:#22c55e}
+.btn-act{display:flex;gap:8px;margin-top:8px}
+.btn-act a{flex:1;text-align:center;padding:8px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700}
+.btn-map{background:#1e40af;color:#fff} .btn-wa{background:#16a34a;color:#fff}
 </style>
 </head>
 <body>
-<div class="header">
-<div style="background:#3b82f6;width:40px;height:40px;border-radius:10px;display:grid;place-items:center">🔍</div>
-<div><h1>Lost & Found ID</h1><p>Papan Informasi Barang & Hewan Hilang</p></div>
-</div>
-<div class="stats">
-<div class="card-stat"><b id="t0">0</b><small>Total Laporan</small></div>
-<div class="card-stat"><b id="t1" style="color:#ef4444">0</b><small>Sedang Dicari</small></div>
-<div class="card-stat"><b id="t2" style="color:#22c55e">0</b><small>Sudah Ketemu</small></div>
-</div>
-<input id="q" class="search" placeholder="🔍 Cari barang...">
-<div class="filters">
-<button class="active" onclick="filterStatus(this,'all')">Semua Status</button>
-<button onclick="filterStatus(this,'hilang')">🔴 Dicari</button>
-<button onclick="filterStatus(this,'temu')">🟢 Ketemu</button>
-</div>
+<div class="h"><div style="background:#3b82f6;width:38px;height:38px;border-radius:10px;display:grid;place-items:center">🔍</div><div><h3>Lost & Found ID</h3><small>Papan Informasi Barang & Hewan Hilang</small></div></div>
+<div class="stats"><div class="st"><b id="t0">0</b><small>Total Laporan</small></div><div class="st"><b id="t1" style="color:#ef4444">0</b><small>Sedang Dicari</small></div><div class="st"><b id="t2" style="color:#22c55e">0</b><small>Sudah Ketemu</small></div></div>
+<input id="q" class="search" placeholder="🔍 Cari lokasi, barang, hewan...">
+<div class="f"><button class="a" onclick="setF(this,'all')">Semua Status</button><button onclick="setF(this,'hilang')">🔴 Sedang Dicari</button><button onclick="setF(this,'temu')">🟢 Sudah Ketemu</button></div>
 <div id="list"></div>
-<button class="fab" onclick="openModal()">+ Lapor Hilang / Temu</button>
-<button class="btn-red" onclick="if(confirm('Hapus semua data test Hh?')){localStorage.clear();location.reload()}">🗑️ Hapus Semua Data Test (Klik ini)</button>
-<div id="modal" class="modal" onclick="if(event.target==this)closeModal()">
-<div class="modal-box">
-<h3>Lapor Barang</h3>
+<button class="fab" onclick="openM()">+ Lapor Hilang / Temu</button>
+
+<div id="modal" class="modal" onclick="if(event.target==this)closeM()"><div class="box">
+<h3>📝 Lapor Barang Hilang/Temu</h3>
 <input id="judul" placeholder="Judul: Dompet Hitam Hilang">
 <select id="jenis"><option value="Barang">Barang</option><option value="Hewan">Hewan</option></select>
-<select id="status"><option value="hilang">Sedang Dicari</option><option value="temu">Sudah Ketemu</option></select>
-<input id="lokasi" placeholder="Lokasi">
-<input id="wa" placeholder="WA">
-<textarea id="desk" placeholder="Deskripsi"></textarea>
+<select id="status"><option value="hilang">Sedang Dicari (Hilang)</option><option value="temu">Sudah Ketemu (Ditemukan)</option></select>
+<input id="lokasi" placeholder="📍 Lokasi Pemilik / Hilang: Contoh: Jln. Hanjur, Depok">
+<input id="wa" placeholder="📱 WA Pemilik: 0812xxxx (wajib pakai 08...)">
+<textarea id="desk" placeholder="Deskripsi lengkap: Ciri-ciri, warna..."></textarea>
 <input id="foto" type="file" accept="image/*">
-<button class="btn-blue" onclick="simpan()">Kirim Laporan</button>
-<button class="btn-gray" onclick="closeModal()">Batal</button>
-</div>
-</div>
+<button style="width:100%;padding:13px;border-radius:10px;border:none;background:#3b82f6;color:#fff;font-weight:700;margin-top:8px" onclick="save()">Kirim Laporan</button>
+<button style="width:100%;padding:12px;border-radius:10px;border:none;background:#334155;color:#fff;margin-top:6px" onclick="closeM()">Batal</button>
+<small style="color:#64748b;display:block;margin-top:10px;text-align:center">Lokasi & WA bakal otomatis bisa diklik di card!</small>
+</div></div>
+
 <script>
-let data=JSON.parse(localStorage.getItem('laporan_v2')||'[]');let fStatus='all';
-function openModal(){document.getElementById('modal').classList.add('show')}
-function closeModal(){document.getElementById('modal').classList.remove('show')}
-function simpan(){
- const judul=document.getElementById('judul').value.trim();
- if(!judul){alert('Isi judul!');return;}
- let item={id:Date.now(),judul,jenis:document.getElementById('jenis').value,status:document.getElementById('status').value,lokasi:document.getElementById('lokasi').value,wa:document.getElementById('wa').value,desk:document.getElementById('desk').value,foto:'',tgl:new Date().toLocaleDateString('id-ID')};
- const file=document.getElementById('foto').files[0];
- if(file){const r=new FileReader();r.onload=e=>{item.foto=e.target.result;push(item);};r.readAsDataURL(file);}else{push(item);}
+let data=JSON.parse(localStorage.getItem('laporan_maps_wa')||localStorage.getItem('laporan_final')||localStorage.getItem('laporan_v2')||'[]');
+let fs='all';
+function openM(){document.getElementById('modal').classList.add('s')}
+function closeM(){document.getElementById('modal').classList.remove('s')}
+function formatWA(wa){
+  let n=wa.replace(/[^0-9]/g,''); 
+  if(n.startsWith('0')) n='62'+n.substring(1);
+  return n;
 }
-function push(item){data.unshift(item);localStorage.setItem('laporan_v2',JSON.stringify(data));closeModal();render();alert('Berhasil!');}
+function save(){
+  const j=document.getElementById('judul').value.trim();
+  if(!j){alert('Isi judul dulu KING!');return}
+  const waRaw=document.getElementById('wa').value.trim();
+  if(!waRaw){alert('Isi WA pemilik!');return}
+  let it={id:Date.now(),judul:j,jenis:document.getElementById('jenis').value,status:document.getElementById('status').value,lokasi:document.getElementById('lokasi').value.trim()||'Depok',wa:waRaw,desk:document.getElementById('desk').value,foto:'',tgl:new Date().toLocaleDateString('id-ID')};
+  const f=document.getElementById('foto').files[0];
+  if(f){const r=new FileReader();r.onload=e=>{it.foto=e.target.result;push(it)};r.readAsDataURL(f)}else push(it)
+}
+function push(it){data.unshift(it);localStorage.setItem('laporan_maps_wa',JSON.stringify(data));closeM();render(); alert('Berhasil! Lokasi & WA sudah bisa diklik!');}
 function render(){
- const q=document.getElementById('q').value.toLowerCase();
- let filtered=data.filter(d=>{const mq=(d.judul+d.lokasi+d.desk).toLowerCase().includes(q);const ms=fStatus=='all'||d.status==fStatus;return mq&&ms;});
- document.getElementById('t0').innerText=data.length;document.getElementById('t1').innerText=data.filter(d=>d.status=='hilang').length;document.getElementById('t2').innerText=data.filter(d=>d.status=='temu').length;
- document.getElementById('list').innerHTML=filtered.length?filtered.map(d=>`<div class="item">${d.foto?`<img src="${d.foto}">`:`<div style="width:70px;height:70px;background:#334155;border-radius:10px;display:grid;place-items:center">📦</div>`}<div><div><span class="badge ${d.status=='hilang'?'b-hilang':'b-temu'}">${d.status=='hilang'?'Dicari':'Ketemu'}</span> <small>${d.tgl}</small></div><b>${d.judul}</b><br><small>📍 ${d.lokasi} • ${d.jenis}</small><br><small>${d.desk}</small></div></div>`).join(''):`<p style="text-align:center;color:#64748b;margin-top:40px">Belum ada laporan</p>`;
+  const q=document.getElementById('q').value.toLowerCase();
+  let fl=data.filter(d=>{return (d.judul+d.lokasi+d.desk+d.wa).toLowerCase().includes(q)&&(fs=='all'||d.status==fs)});
+  document.getElementById('t0').innerText=data.length;
+  document.getElementById('t1').innerText=data.filter(d=>d.status=='hilang').length;
+  document.getElementById('t2').innerText=data.filter(d=>d.status=='temu').length;
+  document.getElementById('list').innerHTML=fl.length?fl.map(d=>{
+    const waNum=formatWA(d.wa);
+    const mapsUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.lokasi)}`;
+    const waUrl=`https://wa.me/${waNum}?text=Halo%20Kak,%20saya%20lihat%20laporan%20*${encodeURIComponent(d.judul)}*%20di%20Lost%26Found%20ID%20lokasi%20${encodeURIComponent(d.lokasi)}`;
+    return `<div class=item>
+      ${d.foto?`<img src="${d.foto}">`:`<div style="width:64px;height:64px;background:#334155;border-radius:10px;display:grid;place-items:center;font-size:24px">📦</div>`}
+      <div style="flex:1">
+        <div><span class="badge ${d.status=='hilang'?'bh':'bt'}">${d.status=='hilang'?'Sedang Dicari':'Sudah Ketemu'}</span> <small style="color:#94a3b8">${d.tgl}</small></div>
+        <b style="display:block;margin:4px 0">${d.judul}</b>
+        <a class="link" href="${mapsUrl}" target="_blank">📍 ${d.lokasi} • ${d.jenis}</a><br>
+        <small style="color:#cbd5e1">${d.desk||'Tidak ada deskripsi'}</small>
+        <div class="btn-act">
+          <a class="btn-map" href="${mapsUrl}" target="_blank">🗺️ Lihat Lokasi</a>
+          <a class="btn-wa" href="${waUrl}" target="_blank">💬 WA: ${d.wa}</a>
+        </div>
+      </div>
+    </div>`}).join(''):`<p style="text-align:center;color:#64748b;margin-top:40px">Belum ada laporan<br><small>Coba ganti filter atau cari lokasi lain</small></p>`;
 }
-function filterStatus(el,s){fStatus=s;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render();}
+function setF(el,s){fs=s;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('a'));el.classList.add('a');render()}
 document.getElementById('q').addEventListener('input',render);render();
 </script>
 </body>
