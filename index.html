@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Papan Informasi Barang & Hewan Hilang</title>
+    <meta name="description" content="PWA papan informasi mobile-first untuk barang dan hewan hilang dengan pelaporan foto, filter status, dan kontak WhatsApp." />
+    
+    <!-- Open Graph & Meta -->
+    <meta property="og:title" content="Papan Informasi Barang & Hewan Hilang" />
+    <meta property="og:description" content="PWA papan informasi mobile-first untuk barang dan hewan hilang dengan pelaporan foto, filter status, dan kontak WhatsApp." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Lost&Found" />
+
+    <!-- PWA Manifest & Icons (Menggunakan relative path ./) -->
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
+
+    <!-- External Stylesheet & Inline Styles -->
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- Offline Indicator Bar -->
+    <div id="offlineBar" class="offline-bar">
+      ⚠️ Mode Offline Aktif — Menampilkan data tersimpan di perangkat.
+    </div>
+
+    <!-- App Header Bar -->
+    <header class="header-bar">
+      <div class="header-inner">
+        <div class="brand-wrapper">
+          <div class="brand-icon">🔍</div>
+          <div class="brand-info">
+            <h1>Lost & Found ID</h1>
+            <span>Papan Informasi Barang & Hewan Hilang</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button id="installAppBtn" class="btn-install-pwa" type="button" title="Pasang ke Layar Utama">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Install</span>
+          </button>
+
+          <button id="themeToggleBtn" class="btn-icon" type="button" title="Ganti Mode Gelap / Terang">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="app-container">
+      <!-- Quick Statistics -->
+      <section class="hero-stats" aria-label="Statistik Laporan">
+        <div class="stat-card">
+          <div class="stat-num blue" id="statTotal">0</div>
+          <div class="stat-label">Total Laporan</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num red" id="statDicari">0</div>
+          <div class="stat-label">Sedang Dicari</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num green" id="statKetemu">0</div>
+          <div class="stat-label">Sudah Ketemu</div>
+        </div>
+      </section>
+
+      <!-- Search & Filters -->
+      <section aria-label="Pencarian dan Filter">
+        <div class="search-box-wrapper">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="search" id="searchInput" class="search-input" placeholder="Cari nama barang, hewan, ciri khas, atau lokasi..." />
+        </div>
+
+        <!-- Filter Status Chips -->
+        <div class="filter-scroll-wrapper">
+          <button class="chip-btn active" data-status="all" type="button">Semua Status</button>
+          <button class="chip-btn" data-status="dicari" type="button">🔴 Sedang Dicari</button>
+          <button class="chip-btn" data-status="ketemu" type="button">🟢 Sudah Ketemu</button>
+        </div>
+
+        <!-- Sub Filter: Kategori Jenis (Segmented) -->
+        <div class="filter-sub-bar">
+          <span style="font-weight: 600;">Filter Jenis:</span>
+          <div class="type-segmented">
+            <button class="segmented-btn active" data-type="all" type="button">Semua</button>
+            <button class="segmented-btn" data-type="hewan" type="button">🐾 Hewan</button>
+            <button class="segmented-btn" data-type="barang" type="button">🎒 Barang</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feed Grid -->
+      <section id="feedGrid" class="feed-grid" aria-live="polite">
+        <!-- Rendered dynamically by app.js -->
+      </section>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-icon">🔎</div>
+        <h3 class="empty-title">Tidak ada laporan ditemukan</h3>
+        <p class="empty-sub">Coba sesuaikan kata kunci pencarian atau ubah pilihan filter di atas.</p>
+        <button class="chip-btn" onclick="document.getElementById('searchInput').value=''; document.querySelectorAll('.chip-btn[data-status]')[0].click(); document.querySelectorAll('.segmented-btn[data-type]')[0].click();">
+          Reset Filter
+        </button>
+      </div>
+    </main>
+
+    <!-- Floating Action Button (FAB) -->
+    <button class="fab-btn" onclick="window.openPostModal()" type="button" aria-label="Buat Laporan Hilang atau Ditemukan">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>Lapor Hilang / Temu</span>
+    </button>
+
+    <!-- Modal Form Lapor Baru -->
+    <div id="postModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="postModalTitle">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <h2 id="postModalTitle">📢 Buat Laporan Barang / Hewan</h2>
+          <button class="btn-close" onclick="window.closeAllModals()" type="button" aria-label="Tutup">&times;</button>
+        </div>
+        
+        <form id="postForm" class="modal-body">
+          <!-- Upload Foto -->
+          <div class="form-group">
+            <label class="form-label">Foto Barang / Hewan</label>
+            <div class="image-upload-area" onclick="document.getElementById('imageFileInput').click()">
+              <input type="file" id="imageFileInput" accept="image/*" style="display: none;" />
+              <img id="uploadPreview" class="upload-preview" alt="Preview Foto" />
+              <div id="uploadPlaceholder" class="upload-placeholder">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <span style="font-size: 13px; font-weight: 600;">Sentuh untuk Pilih / Ambil Foto</span>
+                <span style="font-size: 11px;">Mendukung JPG, PNG, WEBP</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Jenis Laporan -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="form-group">
+              <label class="form-label" for="formType">Jenis Objek <span class="req">*</span></label>
+              <select id="formType" class="form-select" required>
+                <option value="hewan">🐾 Hewan Peliharaan</option>
+                <option value="barang" selected>🎒 Barang / Benda</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="formCategory">Kategori <span class="req">*</span></label>
+              <select id="formCategory" class="form-select" required>
+                <option value="Gadget">Smartphone & Gadget</option>
+                <option value="Dompet & Dokumen">Dompet & Dokumen</option>
+                <option value="Kunci Kendaraan">Kunci Motor / Mobil</option>
+                <option value="Tas & Koper">Tas & Koper</option>
+                <option value="Perhiasan & Aksesoris">Perhiasan & Jam</option>
+                <option value="Barang Umum">Barang Umum</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Judul Laporan -->
+          <div class="form-group">
+            <label class="form-label" for="formTitle">Nama Barang / Hewan <span class="req">*</span></label>
+            <input type="text" id="formTitle" class="form-input" placeholder="Contoh: Kucing Anggora Putih / Dompet Kulit Eiger" required />
+          </div>
+
+          <!-- Ciri-Ciri Khusus -->
+          <div class="form-group">
+            <label class="form-label" for="formTraits">Ciri-Ciri Khusus (Pisahkan dengan koma)</label>
+            <input type="text" id="formTraits" class="form-input" placeholder="Contoh: Bulu lebat, Kalung merah, Ada stiker logo Apple" />
+          </div>
+
+          <!-- Deskripsi Kejadian -->
+          <div class="form-group">
+            <label class="form-label" for="formDesc">Kronologi & Deskripsi Lengkap <span class="req">*</span></label>
+            <textarea id="formDesc" class="form-textarea" placeholder="Jelaskan detail saat barang/hewan hilang atau ditemukan..." required></textarea>
+          </div>
+
+          <!-- Lokasi Terakhir Dilihat -->
+          <div class="form-group">
+            <label class="form-label" for="formLocation">Lokasi Terakhir Dilihat <span class="req">*</span></label>
+            <div class="input-with-button">
+              <input type="text" id="formLocation" class="form-input" placeholder="Contoh: Taman Suropati Menteng / Stasiun Gambir" required />
+              <button type="button" class="btn-input-addon" onclick="window.getCurrentLocation()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                GPS
+              </button>
+            </div>
+          </div>
+
+          <!-- Tanggal & Info Imbalan -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="form-group">
+              <label class="form-label" for="formDate">Tanggal Kejadian <span class="req">*</span></label>
+              <input type="date" id="formDate" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="formReward">Info Imbalan (Opsional)</label>
+              <input type="text" id="formReward" class="form-input" placeholder="Contoh: Rp 500.000" />
+            </div>
+          </div>
+
+          <!-- Kontak Pelapor / WhatsApp -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="form-group">
+              <label class="form-label" for="formName">Nama Pemilik / Pelapor <span class="req">*</span></label>
+              <input type="text" id="formName" class="form-input" placeholder="Nama Anda" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="formPhone">No. WhatsApp <span class="req">*</span></label>
+              <input type="tel" id="formPhone" class="form-input" placeholder="081234567890" required />
+            </div>
+          </div>
+
+          <div class="modal-footer" style="padding: 12px 0 0; margin-top: 4px;">
+            <button type="submit" class="btn-submit">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Publikasikan Laporan</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Detail Laporan -->
+    <div id="detailModal" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <h2>Detail Informasi Laporan</h2>
+          <button class="btn-close" onclick="window.closeAllModals()" type="button" aria-label="Tutup">&times;</button>
+        </div>
+        <div id="detailModalContent" class="modal-body">
+          <!-- Filled dynamically by app.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Panduan Install iOS Safari -->
+    <div id="iosInstallModal" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal-sheet" style="max-width: 420px;">
+        <div class="modal-header">
+          <h2>📲 Cara Pasang di iPhone / iPad</h2>
+          <button class="btn-close" onclick="window.closeAllModals()" type="button">&times;</button>
+        </div>
+        <div class="modal-body" style="font-size: 13.5px; line-height: 1.6;">
+          <p>Untuk menginstall aplikasi PWA ini di iOS Safari:</p>
+          <ol style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+            <li>Ketuk tombol <strong>Share</strong> (ikon kotak dengan panah ke atas) pada bilah navigasi Safari.</li>
+            <li>Gulir ke bawah dan pilih <strong>"Add to Home Screen"</strong> (Tambah ke Layar Utama).</li>
+            <li>Ketuk <strong>Add</strong> di pojok kanan atas.</li>
+          </ol>
+          <button class="btn-submit" onclick="window.closeAllModals()" style="margin-top: 14px;">Mengerti</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Global Toast Message -->
+    <div id="toastMsg" class="toast-msg">
+      <span class="toast-text">Notifikasi</span>
+    </div>
+
+    <!-- Application Script (Modular app.js & ServiceWorker Register) -->
+    <script src="./app.js"></script>
+    <script>
+      // Service Worker Registration for PWA
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('./sw.js')
+            .then(function(reg) {
+              console.log('PWA ServiceWorker registered with scope:', reg.scope);
+            })
+            .catch(function(err) {
+              console.warn('PWA ServiceWorker registration failed:', err);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>
