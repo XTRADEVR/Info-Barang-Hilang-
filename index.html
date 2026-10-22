@@ -275,7 +275,113 @@
   window._DB = getFirestore(app);
   window._FB = { collection, addDoc, doc, updateDoc, onSnapshot, query, orderBy };
 </script>
-<script type="module" src="./app.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA-rV7clVtKcpKHZO75ugwCjJ_nzqNjRsY",
+    authDomain: "lost-found-id-7298c.firebaseapp.com",
+    projectId: "lost-found-id-7298c",
+    storageBucket: "lost-found-id-7298c.firebasestorage.app",
+    messagingSenderId: "392846041166",
+    appId: "1:392846041166:web:12d9378539e636c81be31f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  
+  let reports = [];
+  let activeFilter = 'all';
+  let currentImageData = null;
+
+  const q = query(collection(db, "reports"), orderBy("createdAt", "desc"));
+  onSnapshot(q, (snapshot) => {
+    reports = [];
+    snapshot.forEach((d) => reports.push({ id: d.id, ...d.data() }));
+    renderReports();
+    updateStats();
+    const loading = document.getElementById('loading');
+    if(loading) loading.style.display = 'none';
+  });
+
+  // === BIAR TOMBOL BISA DI KLIK ===
+  window.openModal = () => {
+    const m = document.getElementById('reportModal') || document.getElementById('modal');
+    if(m) m.style.display = 'flex';
+    else document.getElementById('reportForm')?.scrollIntoView({behavior:'smooth'});
+  }
+  window.closeModal = () => {
+    const m = document.getElementById('reportModal') || document.getElementById('modal');
+    if(m) m.style.display = 'none';
+  }
+
+  // Pasang ke tombol biru
+  setTimeout(() => {
+    const btn = document.querySelector('button');
+    const allBtns = document.querySelectorAll('button');
+    allBtns.forEach(b => {
+      if(b.textContent.includes('Lapor Hilang')) {
+        b.onclick = window.openModal;
+      }
+    });
+    // juga tombol + di kanan bawah
+    const fab = document.querySelector('.fab, #fabButton');
+    if(fab) fab.onclick = window.openModal;
+  }, 500);
+
+  // Attach form events
+  const form = document.getElementById('reportForm');
+  if(form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true; btn.textContent = 'Mengirim...';
+      try {
+        const fd = new FormData(e.target);
+        let wa = fd.get('contactInfo')?.trim().replace(/[^0-9]/g,'') || '';
+        if(wa.startsWith('0')) wa = '62' + wa.slice(1);
+        const data = {
+          type: fd.get('type'), category: fd.get('category'),
+          title: fd.get('title'), description: fd.get('description'),
+          location: fd.get('location'), contactName: fd.get('contactName'),
+          contactInfo: wa, image: currentImageData || null,
+          status: 'active', createdAt: Date.now()
+        };
+        await addDoc(collection(db, "reports"), data);
+        e.target.reset(); currentImageData = null;
+        window.closeModal();
+        alert('BERHASIL! Laporan udah PUBLIK!');
+      } catch(err){ alert('Gagal: '+err.message); }
+      finally { btn.disabled=false; btn.textContent='Kirim Laporan'; }
+    });
+  }
+
+  function renderReports(){
+    const grid = document.getElementById('reportsGrid');
+    if(!grid) return;
+    const search = (document.getElementById('search')?.value || '').toLowerCase();
+    let filtered = reports.filter(r => {
+      if(r.status === 'resolved') return false;
+      const matchSearch = !search || (r.title+r.description+r.location).toLowerCase().includes(search);
+      return matchSearch;
+    });
+    if(filtered.length===0){ grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;opacity:0.6">Belum ada laporan - Jadi yang pertama lapor!</div>`; return; }
+    grid.innerHTML = filtered.map(r => {
+      const waText = encodeURIComponent(`Halo ${r.contactName}, saya lihat laporan "${r.title}" di Lost&Found ID`);
+      const waLink = `https://wa.me/${r.contactInfo}?text=${waText}`;
+      return `<div class="card"><div class="card-body"><span class="badge">${r.type}</span><h3>${r.title}</h3><p>${r.description}</p><div>📍 ${r.location}</div><a href="${waLink}" target="_blank" style="display:block;background:#25D366;color:white;padding:10px;border-radius:8px;text-align:center;margin-top:10px;text-decoration:none">💬 WA ${r.contactName}</a></div></div>`;
+    }).join('');
+  }
+  function updateStats(){
+    const active = reports.filter(r=>r.status!=='resolved');
+    const t=document.getElementById('statTotal'), l=document.getElementById('statLost'), f=document.getElementById('statFound');
+    if(t) t.textContent=active.length;
+  }
+
+  // Search
+  document.getElementById('search')?.addEventListener('input', renderReports);
+</script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
