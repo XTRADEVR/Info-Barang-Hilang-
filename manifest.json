@@ -1,23 +1,15 @@
 {
-  "id": "./",
-  "name": "Papan Informasi Barang & Hewan Hilang",
-  "short_name": "Lost&Found",
-  "description": "PWA papan informasi mobile",
-  "start_url": "./",
-  "scope": "./",
+  "name": "Lost & Found ID",
+  "short_name": "LostFoundID",
+  "description": "Papan Informasi Barang & Hewan Hilang - Depok",
+  "start_url": "/Info-Barang-Hilang-/",
+  "scope": "/Info-Barang-Hilang-/",
   "display": "standalone",
   "background_color": "#0f172a",
-  "theme_color": "#2563eb",
-  "orientation": "portrait-primary",
+  "theme_color": "#3b82f6",
   "icons": [
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "./icon-512.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
