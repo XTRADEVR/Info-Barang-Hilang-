@@ -394,10 +394,27 @@
   }
 </script>
 <script>
-window.openPostModal=function(){var m=document.getElementById('postModal');if(m)m.style.display='flex';}
-window.closePostModal=function(){var m=document.getElementById('postModal');if(m)m.style.display='none';}
-window.openPost=window.openModal=window.openPostModal;
-window.closePost=window.closeModal=window.closePostModal;
-</script>
+// FORCE FIX TOMBOL LAPOR - KING
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.querySelector('button');
+  const allBtns = document.querySelectorAll('button');
+  // cari tombol yang ada tulisan Lapor
+  let laporBtn = null;
+  allBtns.forEach(b => { if(b.textContent.includes('Lapor')) laporBtn = b; });
+  
+  if(laporBtn){
+    laporBtn.onclick = () => {
+      const modal = document.getElementById('reportModal') || document.getElementById('modal') || document.querySelector('.modal');
+      if(modal){
+        modal.style.display = 'flex';
+        modal.style.display = 'block';
+      } else {
+        alert('Modal ID tidak ditemukan! Ganti id modal jadi reportModal');
+      }
+    };
+    console.log('Tombol Lapor di-fix KING!');
+  }
+});
+    </script>
 </body>
 </html>
