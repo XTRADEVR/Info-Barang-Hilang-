@@ -1,40 +1,48 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lost & Found ID - Maps & WA Fix</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lost & Found ID</title>
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f172a">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
 body{background:#0f172a;color:#fff;padding:16px;padding-bottom:100px}
 .header{display:flex;gap:12px;align-items:center;margin-bottom:18px}
-.logo{width:42px;height:42px;background:#3b82f6;border-radius:12px;display:grid;place-items:center;font-size:20px}
+.logo{width:42px;height:42px;background:#1e293b;border:1px solid #334155;border-radius:12px;display:grid;place-items:center;overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:cover}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
 .st{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:12px;text-align:center}
 .st b{font-size:24px;display:block}
 .search{width:100%;padding:14px 16px;border-radius:14px;border:1px solid #334155;background:#1e293b;color:#fff;margin-bottom:10px}
 .filters,.type-filters{display:flex;gap:8px;overflow:auto;margin-bottom:8px}
 .filters button,.type-filters button{padding:8px 16px;border-radius:999px;border:1px solid #334155;background:#1e293b;color:#cbd5e1;white-space:nowrap;font-size:13px}
-.filters button.active{background:#3b82f6!important;color:#fff}
+.filters button.active{background:#3b82f6!important;color:#fff;border-color:#3b82f6}
 .type-filters button.active{background:#e2e8f0;color:#0f172a}
 .card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:14px;display:flex;gap:12px;margin-bottom:12px}
-.thumb{width:64px;height:64px;border-radius:12px;background:#334155;display:grid;place-items:center;font-size:26px;overflow:hidden}
+.thumb{width:64px;height:64px;border-radius:12px;background:#334155;display:grid;place-items:center;font-size:26px;overflow:hidden;flex-shrink:0}
 .thumb img{width:100%;height:100%;object-fit:cover}
 .badge{font-size:11px;padding:4px 10px;border-radius:999px;font-weight:800}
-.badge-hilang{background:#ef4444} .badge-temu{background:#22c55e}
-.title{font-weight:700;font-size:16px;margin:2px 0}
+.badge-hilang{background:#ef4444}
+.title{font-weight:700;font-size:16px;margin:3px 0}
+.meta{font-size:13px;color:#94a3b8}
 .actions{display:flex;gap:8px;margin-top:10px}
 .btn{flex:1;text-align:center;padding:9px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:700}
 .btn-map{background:#1e3a8a;color:#93c5fd;border:1px solid #1e40af}
 .btn-wa{background:#14532d;color:#86efac;border:1px solid #166534}
+.btn-del{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d;flex:0 0 42px}
 .fab{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#3b82f6;color:#fff;border:none;padding:14px 28px;border-radius:999px;font-weight:800}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
-.modal.show{display:flex} .box{background:#1e293b;width:100%;max-width:440px;border-radius:20px;padding:18px;border:1px solid #334155}
+.modal.show{display:flex} .box{background:#1e293b;width:100%;max-width:440px;border-radius:20px;padding:18px;border:1px solid #334155;max-height:92vh;overflow:auto}
 .box input,.box select,.box textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff}
 .btn-submit{width:100%;padding:13px;border-radius:12px;border:none;background:#3b82f6;color:#fff;font-weight:800;margin-top:8px}
 </style>
 </head>
 <body>
-<div class="header"><div class="logo">🔍</div><div><h2>Lost & Found ID</h2><small>Papan Informasi Barang & Hewan Hilang</small></div></div>
+<div class="header"><div class="logo"><img src="icon.png"></div><div><h2>Lost & Found ID</h2><small>Papan Informasi Barang & Hewan Hilang</small></div></div>
 <div class="stats"><div class="st"><b id="t0">0</b><small>Total Laporan</small></div><div class="st"><b id="t1" style="color:#ef4444">0</b><small>Sedang Dicari</small></div><div class="st"><b id="t2" style="color:#22c55e">0</b><small>Sudah Ketemu</small></div></div>
 <input id="q" class="search" placeholder="🔍 Cari nama barang, hewan, ciri khas, atau lokasi...">
 <div class="filters"><button class="active" onclick="setStatus(this,'all')">Semua Status</button><button onclick="setStatus(this,'hilang')">🔴 Sedang Dicari</button><button onclick="setStatus(this,'temu')">🟢 Sudah Ketemu</button></div>
@@ -46,22 +54,25 @@ body{background:#0f172a;color:#fff;padding:16px;padding-bottom:100px}
 <input id="judul" placeholder="Judul: Dompet Hitam Hilang">
 <select id="jenis"><option value="Barang">Barang</option><option value="Hewan">Hewan</option></select>
 <select id="status"><option value="hilang">Sedang Dicari</option><option value="temu">Sudah Ketemu</option></select>
-<input id="lokasi" placeholder="📍 Lokasi Pemilik / Hilang: Jln. Hanjur, Depok">
+<input id="lokasi" placeholder="📍 Lokasi Pemilik: Jln. Hanjur, Depok">
 <input id="wa" placeholder="📱 WA Pemilik: 08950857938">
-<textarea id="desk" placeholder="Deskripsi: Warna hitam, polos..."></textarea>
+<textarea id="desk" placeholder="Deskripsi..."></textarea>
 <input id="foto" type="file" accept="image/*">
 <button class="btn-submit" onclick="save()">Kirim Laporan</button>
 <button style="width:100%;padding:12px;border-radius:12px;border:none;background:#334155;color:#fff;margin-top:6px" onclick="closeModal()">Batal</button>
+<button onclick="clearAll()" style="width:100%;margin-top:12px;padding:10px;border-radius:10px;border:1px solid #7f1d1d;background:#450a0a;color:#fca5a5">🗑️ Hapus Semua Laporan</button>
 </div></div>
 <script>
-let data=JSON.parse(localStorage.getItem('laporan_final_v5')||localStorage.getItem('laporan_maps_wa')||localStorage.getItem('laporan_final')||localStorage.getItem('laporan_v2')||'[]');
+let data=JSON.parse(localStorage.getItem('laporan_final_v5')||'[]');
 let fs='all',ft='all';
 function openModal(){document.getElementById('modal').classList.add('show')}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
-function formatWA(wa){let n=(wa||'').toString().replace(/[^0-9]/g,'');if(!n)return'';if(n.startsWith('0'))n='62'+n.substring(1);return n;}
-function save(){const j=document.getElementById('judul').value.trim();const w=document.getElementById('wa').value.trim();const l=document.getElementById('lokasi').value.trim();if(!j){alert('Isi judul!');return}if(!w){alert('Isi WA!');return}if(!l){alert('Isi lokasi!');return}let it={id:Date.now(),judul:j,jenis:document.getElementById('jenis').value,status:document.getElementById('status').value,lokasi:l,wa:w,desk:document.getElementById('desk').value.trim(),foto:'',tgl:new Date().toLocaleDateString('id-ID')};const file=document.getElementById('foto').files[0];if(file){const r=new FileReader();r.onload=e=>{it.foto=e.target.result;push(it)};r.readAsDataURL(file);}else push(it);}
+function formatWA(wa){let n=(wa||'').toString().replace(/[^0-9]/g,'');if(n.startsWith('0'))n='62'+n.substring(1);return n;}
+function save(){const j=document.getElementById('judul').value.trim();const w=document.getElementById('wa').value.trim();const l=document.getElementById('lokasi').value.trim();if(!j||!w||!l){alert('Isi judul, lokasi, WA!');return}let it={id:Date.now(),judul:j,jenis:document.getElementById('jenis').value,status:document.getElementById('status').value,lokasi:l,wa:w,desk:document.getElementById('desk').value.trim(),foto:'',tgl:new Date().toLocaleDateString('id-ID')};const file=document.getElementById('foto').files[0];if(file){const r=new FileReader();r.onload=e=>{it.foto=e.target.result;push(it)};r.readAsDataURL(file);}else push(it);}
 function push(it){data.unshift(it);localStorage.setItem('laporan_final_v5',JSON.stringify(data));closeModal();render();}
-function render(){const q=document.getElementById('q').value.toLowerCase();let filtered=data.filter(d=>{return (d.judul+' '+d.lokasi+' '+d.desk).toLowerCase().includes(q)&&(fs=='all'||d.status==fs)&&(ft=='all'||d.jenis==ft);});document.getElementById('t0').innerText=data.length;document.getElementById('t1').innerText=data.filter(d=>d.status=='hilang').length;document.getElementById('t2').innerText=data.filter(d=>d.status=='temu').length;document.getElementById('list').innerHTML=filtered.length?filtered.map(d=>{const waNum=formatWA(d.wa);const mapsUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.lokasi)}`;const waUrl=`https://wa.me/${waNum}?text=${encodeURIComponent('Halo kak, saya lihat laporan '+d.judul+' di Lost & Found ID. Lokasi: '+d.lokasi)}`;return `<div class="card"><div class="thumb">${d.foto?`<img src="${d.foto}">`:`📦`}</div><div style="flex:1"><span class="badge badge-hilang">Sedang Dicari</span> <small style="color:#94a3b8">${d.tgl}</small><div class="title">${d.judul}</div><div style="font-size:13px;color:#94a3b8"><a href="${mapsUrl}" target="_blank" style="color:#93c5fd;text-decoration:none">📍 ${d.lokasi} • ${d.jenis}</a><br>${d.desk}<br><span style="color:#7dd3fc">WA: ${d.wa}</span></div><div class="actions"><a class="btn btn-map" href="${mapsUrl}" target="_blank">🗺️ Lokasi Pemilik</a><a class="btn btn-wa" href="${waUrl}" target="_blank">💬 WhatsApp</a></div></div></div>`}).join(''):`<p style="text-align:center;color:#64748b;margin-top:50px">Belum ada laporan</p>`;}
+function deleteOne(id){if(!confirm('Hapus laporan ini?'))return;data=data.filter(d=>d.id!==id);localStorage.setItem('laporan_final_v5',JSON.stringify(data));render();}
+function clearAll(){if(!confirm('Hapus SEMUA?'))return;data=[];localStorage.setItem('laporan_final_v5',JSON.stringify(data));render();closeModal();}
+function render(){const q=document.getElementById('q').value.toLowerCase();let f=data.filter(d=>{return (d.judul+' '+d.lokasi+' '+d.desk).toLowerCase().includes(q)&&(fs=='all'||d.status==fs)&&(ft=='all'||d.jenis==ft);});document.getElementById('t0').innerText=data.length;document.getElementById('t1').innerText=data.filter(d=>d.status=='hilang').length;document.getElementById('t2').innerText=data.filter(d=>d.status=='temu').length;document.getElementById('list').innerHTML=f.length?f.map(d=>{const waNum=formatWA(d.wa);const maps=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.lokasi)}`;const wa=`https://wa.me/${waNum}?text=${encodeURIComponent('Halo, lihat laporan '+d.judul+' di Lost&Found ID - Lokasi: '+d.lokasi)}`;return `<div class="card"><div class="thumb">${d.foto?`<img src="${d.foto}">`:`📦`}</div><div style="flex:1"><span class="badge badge-hilang">Sedang Dicari</span> <small style="color:#94a3b8">${d.tgl}</small><div class="title">${d.judul}</div><div class="meta"><a href="${maps}" target="_blank" style="color:#93c5fd;text-decoration:none">📍 ${d.lokasi} • ${d.jenis}</a><br>${d.desk}<br><span style="color:#7dd3fc">WA: ${d.wa}</span></div><div class="actions"><a class="btn btn-map" href="${maps}" target="_blank">🗺️ Lokasi</a><a class="btn btn-wa" href="${wa}" target="_blank">💬 WhatsApp</a><a class="btn btn-del" href="#" onclick="deleteOne(${d.id});return false">🗑️</a></div></div></div>`}).join(''):`<p style="text-align:center;color:#64748b;margin-top:50px">Belum ada laporan</p>`;}
 function setStatus(el,s){fs=s;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render();}
 function setType(el,t){ft=t;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render();}
 document.getElementById('q').addEventListener('input',render);render();
