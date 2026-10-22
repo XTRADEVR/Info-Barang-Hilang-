@@ -2,99 +2,68 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lost & Found ID - Maps & WA</title>
+<title>Lost & Found ID - Maps & WA Fix</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
-body{background:#0f172a;color:#fff;padding:16px;padding-bottom:90px}
-.h{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+body{background:#0f172a;color:#fff;padding:16px;padding-bottom:100px}
+.header{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+.logo{width:42px;height:42px;background:#3b82f6;border-radius:12px;display:grid;place-items:center;font-size:20px}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
 .st{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:12px;text-align:center}
-.st b{font-size:22px;display:block}
-.search{width:100%;padding:14px;border-radius:12px;border:1px solid #334155;background:#1e293b;color:#fff;margin-bottom:10px}
-.f{display:flex;gap:8px;overflow:auto;margin-bottom:12px}
-.f button{padding:8px 14px;border-radius:20px;border:1px solid #334155;background:#1e293b;color:#fff;white-space:nowrap}
-.f .a{background:#3b82f6!important}
-.item{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:14px;display:flex;gap:12px;margin-bottom:12px}
-.item img{width:64px;height:64px;border-radius:10px;object-fit:cover;background:#334155}
-.link{color:#60a5fa;text-decoration:none;font-weight:600} .link:hover{text-decoration:underline}
-.link-wa{color:#22c55e}
-.fab{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#3b82f6;padding:14px 26px;border-radius:30px;border:none;color:#fff;font-weight:700;box-shadow:0 10px 30px rgba(59,130,246,.5)}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
-.modal.s{display:flex} .box{background:#1e293b;width:100%;max-width:420px;border-radius:18px;padding:18px;border:1px solid #334155;max-height:90vh;overflow:auto}
+.st b{font-size:24px;display:block}
+.search{width:100%;padding:14px 16px;border-radius:14px;border:1px solid #334155;background:#1e293b;color:#fff;margin-bottom:10px}
+.filters,.type-filters{display:flex;gap:8px;overflow:auto;margin-bottom:8px}
+.filters button,.type-filters button{padding:8px 16px;border-radius:999px;border:1px solid #334155;background:#1e293b;color:#cbd5e1;white-space:nowrap;font-size:13px}
+.filters button.active{background:#3b82f6!important;color:#fff}
+.type-filters button.active{background:#e2e8f0;color:#0f172a}
+.card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:14px;display:flex;gap:12px;margin-bottom:12px}
+.thumb{width:64px;height:64px;border-radius:12px;background:#334155;display:grid;place-items:center;font-size:26px;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.badge{font-size:11px;padding:4px 10px;border-radius:999px;font-weight:800}
+.badge-hilang{background:#ef4444} .badge-temu{background:#22c55e}
+.title{font-weight:700;font-size:16px;margin:2px 0}
+.actions{display:flex;gap:8px;margin-top:10px}
+.btn{flex:1;text-align:center;padding:9px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:700}
+.btn-map{background:#1e3a8a;color:#93c5fd;border:1px solid #1e40af}
+.btn-wa{background:#14532d;color:#86efac;border:1px solid #166534}
+.fab{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#3b82f6;color:#fff;border:none;padding:14px 28px;border-radius:999px;font-weight:800}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
+.modal.show{display:flex} .box{background:#1e293b;width:100%;max-width:440px;border-radius:20px;padding:18px;border:1px solid #334155}
 .box input,.box select,.box textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff}
-.badge{font-size:11px;padding:4px 8px;border-radius:10px;font-weight:700} .bh{background:#ef4444} .bt{background:#22c55e}
-.btn-act{display:flex;gap:8px;margin-top:8px}
-.btn-act a{flex:1;text-align:center;padding:8px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700}
-.btn-map{background:#1e40af;color:#fff} .btn-wa{background:#16a34a;color:#fff}
+.btn-submit{width:100%;padding:13px;border-radius:12px;border:none;background:#3b82f6;color:#fff;font-weight:800;margin-top:8px}
 </style>
 </head>
 <body>
-<div class="h"><div style="background:#3b82f6;width:38px;height:38px;border-radius:10px;display:grid;place-items:center">🔍</div><div><h3>Lost & Found ID</h3><small>Papan Informasi Barang & Hewan Hilang</small></div></div>
+<div class="header"><div class="logo">🔍</div><div><h2>Lost & Found ID</h2><small>Papan Informasi Barang & Hewan Hilang</small></div></div>
 <div class="stats"><div class="st"><b id="t0">0</b><small>Total Laporan</small></div><div class="st"><b id="t1" style="color:#ef4444">0</b><small>Sedang Dicari</small></div><div class="st"><b id="t2" style="color:#22c55e">0</b><small>Sudah Ketemu</small></div></div>
-<input id="q" class="search" placeholder="🔍 Cari lokasi, barang, hewan...">
-<div class="f"><button class="a" onclick="setF(this,'all')">Semua Status</button><button onclick="setF(this,'hilang')">🔴 Sedang Dicari</button><button onclick="setF(this,'temu')">🟢 Sudah Ketemu</button></div>
+<input id="q" class="search" placeholder="🔍 Cari nama barang, hewan, ciri khas, atau lokasi...">
+<div class="filters"><button class="active" onclick="setStatus(this,'all')">Semua Status</button><button onclick="setStatus(this,'hilang')">🔴 Sedang Dicari</button><button onclick="setStatus(this,'temu')">🟢 Sudah Ketemu</button></div>
+<div class="type-filters"><button class="active" onclick="setType(this,'all')">Semua</button><button onclick="setType(this,'Hewan')">🐾 Hewan</button><button onclick="setType(this,'Barang')">🎒 Barang</button></div>
 <div id="list"></div>
-<button class="fab" onclick="openM()">+ Lapor Hilang / Temu</button>
-
-<div id="modal" class="modal" onclick="if(event.target==this)closeM()"><div class="box">
-<h3>📝 Lapor Barang Hilang/Temu</h3>
+<button class="fab" onclick="openModal()">+ Lapor Hilang / Temu</button>
+<div id="modal" class="modal" onclick="if(event.target==this)closeModal()"><div class="box">
+<h3>📝 Lapor Baru</h3>
 <input id="judul" placeholder="Judul: Dompet Hitam Hilang">
 <select id="jenis"><option value="Barang">Barang</option><option value="Hewan">Hewan</option></select>
-<select id="status"><option value="hilang">Sedang Dicari (Hilang)</option><option value="temu">Sudah Ketemu (Ditemukan)</option></select>
-<input id="lokasi" placeholder="📍 Lokasi Pemilik / Hilang: Contoh: Jln. Hanjur, Depok">
-<input id="wa" placeholder="📱 WA Pemilik: 0812xxxx (wajib pakai 08...)">
-<textarea id="desk" placeholder="Deskripsi lengkap: Ciri-ciri, warna..."></textarea>
+<select id="status"><option value="hilang">Sedang Dicari</option><option value="temu">Sudah Ketemu</option></select>
+<input id="lokasi" placeholder="📍 Lokasi Pemilik / Hilang: Jln. Hanjur, Depok">
+<input id="wa" placeholder="📱 WA Pemilik: 08950857938">
+<textarea id="desk" placeholder="Deskripsi: Warna hitam, polos..."></textarea>
 <input id="foto" type="file" accept="image/*">
-<button style="width:100%;padding:13px;border-radius:10px;border:none;background:#3b82f6;color:#fff;font-weight:700;margin-top:8px" onclick="save()">Kirim Laporan</button>
-<button style="width:100%;padding:12px;border-radius:10px;border:none;background:#334155;color:#fff;margin-top:6px" onclick="closeM()">Batal</button>
-<small style="color:#64748b;display:block;margin-top:10px;text-align:center">Lokasi & WA bakal otomatis bisa diklik di card!</small>
+<button class="btn-submit" onclick="save()">Kirim Laporan</button>
+<button style="width:100%;padding:12px;border-radius:12px;border:none;background:#334155;color:#fff;margin-top:6px" onclick="closeModal()">Batal</button>
 </div></div>
-
 <script>
-let data=JSON.parse(localStorage.getItem('laporan_maps_wa')||localStorage.getItem('laporan_final')||localStorage.getItem('laporan_v2')||'[]');
-let fs='all';
-function openM(){document.getElementById('modal').classList.add('s')}
-function closeM(){document.getElementById('modal').classList.remove('s')}
-function formatWA(wa){
-  let n=wa.replace(/[^0-9]/g,''); 
-  if(n.startsWith('0')) n='62'+n.substring(1);
-  return n;
-}
-function save(){
-  const j=document.getElementById('judul').value.trim();
-  if(!j){alert('Isi judul dulu KING!');return}
-  const waRaw=document.getElementById('wa').value.trim();
-  if(!waRaw){alert('Isi WA pemilik!');return}
-  let it={id:Date.now(),judul:j,jenis:document.getElementById('jenis').value,status:document.getElementById('status').value,lokasi:document.getElementById('lokasi').value.trim()||'Depok',wa:waRaw,desk:document.getElementById('desk').value,foto:'',tgl:new Date().toLocaleDateString('id-ID')};
-  const f=document.getElementById('foto').files[0];
-  if(f){const r=new FileReader();r.onload=e=>{it.foto=e.target.result;push(it)};r.readAsDataURL(f)}else push(it)
-}
-function push(it){data.unshift(it);localStorage.setItem('laporan_maps_wa',JSON.stringify(data));closeM();render(); alert('Berhasil! Lokasi & WA sudah bisa diklik!');}
-function render(){
-  const q=document.getElementById('q').value.toLowerCase();
-  let fl=data.filter(d=>{return (d.judul+d.lokasi+d.desk+d.wa).toLowerCase().includes(q)&&(fs=='all'||d.status==fs)});
-  document.getElementById('t0').innerText=data.length;
-  document.getElementById('t1').innerText=data.filter(d=>d.status=='hilang').length;
-  document.getElementById('t2').innerText=data.filter(d=>d.status=='temu').length;
-  document.getElementById('list').innerHTML=fl.length?fl.map(d=>{
-    const waNum=formatWA(d.wa);
-    const mapsUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.lokasi)}`;
-    const waUrl=`https://wa.me/${waNum}?text=Halo%20Kak,%20saya%20lihat%20laporan%20*${encodeURIComponent(d.judul)}*%20di%20Lost%26Found%20ID%20lokasi%20${encodeURIComponent(d.lokasi)}`;
-    return `<div class=item>
-      ${d.foto?`<img src="${d.foto}">`:`<div style="width:64px;height:64px;background:#334155;border-radius:10px;display:grid;place-items:center;font-size:24px">📦</div>`}
-      <div style="flex:1">
-        <div><span class="badge ${d.status=='hilang'?'bh':'bt'}">${d.status=='hilang'?'Sedang Dicari':'Sudah Ketemu'}</span> <small style="color:#94a3b8">${d.tgl}</small></div>
-        <b style="display:block;margin:4px 0">${d.judul}</b>
-        <a class="link" href="${mapsUrl}" target="_blank">📍 ${d.lokasi} • ${d.jenis}</a><br>
-        <small style="color:#cbd5e1">${d.desk||'Tidak ada deskripsi'}</small>
-        <div class="btn-act">
-          <a class="btn-map" href="${mapsUrl}" target="_blank">🗺️ Lihat Lokasi</a>
-          <a class="btn-wa" href="${waUrl}" target="_blank">💬 WA: ${d.wa}</a>
-        </div>
-      </div>
-    </div>`}).join(''):`<p style="text-align:center;color:#64748b;margin-top:40px">Belum ada laporan<br><small>Coba ganti filter atau cari lokasi lain</small></p>`;
-}
-function setF(el,s){fs=s;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('a'));el.classList.add('a');render()}
+let data=JSON.parse(localStorage.getItem('laporan_final_v5')||localStorage.getItem('laporan_maps_wa')||localStorage.getItem('laporan_final')||localStorage.getItem('laporan_v2')||'[]');
+let fs='all',ft='all';
+function openModal(){document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function formatWA(wa){let n=(wa||'').toString().replace(/[^0-9]/g,'');if(!n)return'';if(n.startsWith('0'))n='62'+n.substring(1);return n;}
+function save(){const j=document.getElementById('judul').value.trim();const w=document.getElementById('wa').value.trim();const l=document.getElementById('lokasi').value.trim();if(!j){alert('Isi judul!');return}if(!w){alert('Isi WA!');return}if(!l){alert('Isi lokasi!');return}let it={id:Date.now(),judul:j,jenis:document.getElementById('jenis').value,status:document.getElementById('status').value,lokasi:l,wa:w,desk:document.getElementById('desk').value.trim(),foto:'',tgl:new Date().toLocaleDateString('id-ID')};const file=document.getElementById('foto').files[0];if(file){const r=new FileReader();r.onload=e=>{it.foto=e.target.result;push(it)};r.readAsDataURL(file);}else push(it);}
+function push(it){data.unshift(it);localStorage.setItem('laporan_final_v5',JSON.stringify(data));closeModal();render();}
+function render(){const q=document.getElementById('q').value.toLowerCase();let filtered=data.filter(d=>{return (d.judul+' '+d.lokasi+' '+d.desk).toLowerCase().includes(q)&&(fs=='all'||d.status==fs)&&(ft=='all'||d.jenis==ft);});document.getElementById('t0').innerText=data.length;document.getElementById('t1').innerText=data.filter(d=>d.status=='hilang').length;document.getElementById('t2').innerText=data.filter(d=>d.status=='temu').length;document.getElementById('list').innerHTML=filtered.length?filtered.map(d=>{const waNum=formatWA(d.wa);const mapsUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.lokasi)}`;const waUrl=`https://wa.me/${waNum}?text=${encodeURIComponent('Halo kak, saya lihat laporan '+d.judul+' di Lost & Found ID. Lokasi: '+d.lokasi)}`;return `<div class="card"><div class="thumb">${d.foto?`<img src="${d.foto}">`:`📦`}</div><div style="flex:1"><span class="badge badge-hilang">Sedang Dicari</span> <small style="color:#94a3b8">${d.tgl}</small><div class="title">${d.judul}</div><div style="font-size:13px;color:#94a3b8"><a href="${mapsUrl}" target="_blank" style="color:#93c5fd;text-decoration:none">📍 ${d.lokasi} • ${d.jenis}</a><br>${d.desk}<br><span style="color:#7dd3fc">WA: ${d.wa}</span></div><div class="actions"><a class="btn btn-map" href="${mapsUrl}" target="_blank">🗺️ Lokasi Pemilik</a><a class="btn btn-wa" href="${waUrl}" target="_blank">💬 WhatsApp</a></div></div></div>`}).join(''):`<p style="text-align:center;color:#64748b;margin-top:50px">Belum ada laporan</p>`;}
+function setStatus(el,s){fs=s;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render();}
+function setType(el,t){ft=t;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render();}
 document.getElementById('q').addEventListener('input',render);render();
 </script>
 </body>
