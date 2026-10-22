@@ -393,17 +393,11 @@
     });
   }
 </script>
-    <script>
-// FIX TOMBOL BIAR BISA DI KLIK
-window.openPostModal = window.openPost = window.openModal = function(){
-  const m = document.getElementById('postModal');
-  if(m) m.style.display = 'flex';
-  console.log('MODAL OPENED');
-}
-window.closePostModal = window.closeModal = function(){
-  const m = document.getElementById('postModal');
-  if(m) m.style.display = 'none';
-}
-    </script>
+<script>
+window.openPostModal=function(){var m=document.getElementById('postModal');if(m)m.style.display='flex';}
+window.closePostModal=function(){var m=document.getElementById('postModal');if(m)m.style.display='none';}
+window.openPost=window.openModal=window.openPostModal;
+window.closePost=window.closeModal=window.closePostModal;
+</script>
 </body>
 </html>
