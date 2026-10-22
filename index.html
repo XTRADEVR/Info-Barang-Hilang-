@@ -3,125 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lost & Found ID - Pro Fix</title>
+<title>Lost & Found ID - Pro Fix V3</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
 body{background:#0f172a;color:white;padding:16px;padding-bottom:90px}
 .header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.header h1{font-size:20px} .header p{font-size:12px;color:#94a3b8}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}
 .card-stat{background:#1e293b;border-radius:12px;padding:12px;text-align:center;border:1px solid #334155}
 .card-stat b{font-size:24px;display:block}
-.search{width:100%;padding:14px;border-radius:12px;border:1px solid #334155;background:#1e293b;color:white;margin-bottom:12px;outline:none}
-.filters{display:flex;gap:8px;overflow:auto;margin-bottom:14px;padding-bottom:4px}
-.filters button{padding:8px 16px;border-radius:20px;border:1px solid #334155;background:#1e293b;color:white;white-space:nowrap}
-.filters .active{background:#3b82f6!important;border-color:#3b82f6;color:white}
+.search{width:100%;padding:14px;border-radius:12px;border:1px solid #334155;background:#1e293b;color:white;margin-bottom:12px}
+.filters{display:flex;gap:8px;overflow:auto;margin-bottom:12px}
+.filters button{padding:8px 16px;border-radius:20px;border:1px solid #334155;background:#1e293b;color:white}
+.filters .active{background:#3b82f6!important}
 .item{background:#1e293b;border-radius:14px;padding:14px;margin-bottom:12px;display:flex;gap:12px;border:1px solid #334155}
-.item img{width:70px;height:70px;border-radius:10px;object-fit:cover;background:#334155}
-.fab{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#3b82f6;padding:15px 28px;border-radius:30px;border:none;color:white;font-weight:bold;box-shadow:0 10px 30px rgba(59,130,246,.6);z-index:10}
+.item img{width:70px;height:70px;border-radius:10px;object-fit:cover}
+.fab{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#3b82f6;padding:15px 28px;border-radius:30px;border:none;color:white;font-weight:bold;z-index:10}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:999;padding:16px}
 .modal.show{display:flex}
-.modal-box{background:#1e293b;width:100%;max-width:420px;border-radius:20px;padding:20px;border:1px solid #334155;max-height:90vh;overflow:auto}
-.modal-box input,.modal-box select,.modal-box textarea{width:100%;padding:12px;margin:7px 0;border-radius:10px;border:1px solid #334155;background:#0f172a;color:white;outline:none}
-.modal-box button{width:100%;padding:13px;border-radius:10px;border:none;margin-top:8px;font-weight:bold;cursor:pointer}
+.modal-box{background:#1e293b;width:100%;max-width:420px;border-radius:20px;padding:20px;border:1px solid #334155}
+.modal-box input,.modal-box select,.modal-box textarea{width:100%;padding:12px;margin:7px 0;border-radius:10px;border:1px solid #334155;background:#0f172a;color:white}
+.modal-box button{width:100%;padding:13px;border-radius:10px;border:none;margin-top:8px;font-weight:bold}
 .btn-blue{background:#3b82f6;color:white} .btn-gray{background:#334155;color:white}
+.btn-red{background:#ef4444;color:white;margin-top:30px}
 .badge{font-size:11px;padding:5px 10px;border-radius:12px;font-weight:bold}
 .b-hilang{background:#ef4444} .b-temu{background:#22c55e}
 </style>
 </head>
 <body>
 <div class="header">
-<div style="background:#3b82f6;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:20px">🔍</div>
+<div style="background:#3b82f6;width:40px;height:40px;border-radius:10px;display:grid;place-items:center">🔍</div>
 <div><h1>Lost & Found ID</h1><p>Papan Informasi Barang & Hewan Hilang</p></div>
 </div>
-
 <div class="stats">
-<div class="card-stat"><b id="t0" style="color:#60a5fa">0</b><small>Total Laporan</small></div>
+<div class="card-stat"><b id="t0">0</b><small>Total Laporan</small></div>
 <div class="card-stat"><b id="t1" style="color:#ef4444">0</b><small>Sedang Dicari</small></div>
 <div class="card-stat"><b id="t2" style="color:#22c55e">0</b><small>Sudah Ketemu</small></div>
 </div>
-
-<input id="q" class="search" placeholder="🔍 Cari nama barang, hewan, ciri khas, atau lokasi...">
-
+<input id="q" class="search" placeholder="🔍 Cari barang...">
 <div class="filters">
 <button class="active" onclick="filterStatus(this,'all')">Semua Status</button>
-<button onclick="filterStatus(this,'hilang')">🔴 Sedang Dicari</button>
-<button onclick="filterStatus(this,'temu')">🟢 Sudah Ketemu</button>
+<button onclick="filterStatus(this,'hilang')">🔴 Dicari</button>
+<button onclick="filterStatus(this,'temu')">🟢 Ketemu</button>
 </div>
-<div class="filters">
-<button class="active" onclick="filterJenis(this,'all')">Semua</button>
-<button onclick="filterJenis(this,'Hewan')">🐾 Hewan</button>
-<button onclick="filterJenis(this,'Barang')">🎒 Barang</button>
-</div>
-
 <div id="list"></div>
 <button class="fab" onclick="openModal()">+ Lapor Hilang / Temu</button>
+<button class="btn-red" onclick="if(confirm('Hapus semua data test Hh?')){localStorage.clear();location.reload()}">🗑️ Hapus Semua Data Test (Klik ini)</button>
 
 <div id="modal" class="modal" onclick="if(event.target==this)closeModal()">
 <div class="modal-box">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h3>Lapor Barang</h3><span onclick="closeModal()" style="font-size:24px;cursor:pointer">×</span></div>
-<input id="judul" placeholder="Nama Barang: Dompet Hitam Hilang di Margonda">
-<select id="jenis"><option value="Barang">🎒 Barang</option><option value="Hewan">🐾 Hewan</option></select>
-<select id="status"><option value="hilang">🔴 Sedang Dicari (Hilang)</option><option value="temu">🟢 Sudah Ketemu (Temuan)</option></select>
-<input id="lokasi" placeholder="Lokasi: Margonda, Depok">
-<input id="wa" placeholder="No WA: 0812xxxx (opsional)">
-<textarea id="desk" rows="3" placeholder="Deskripsi ciri-ciri lengkap..."></textarea>
+<h3>Lapor Barang</h3>
+<input id="judul" placeholder="Judul: Dompet Hitam Hilang">
+<select id="jenis"><option value="Barang">Barang</option><option value="Hewan">Hewan</option></select>
+<select id="status"><option value="hilang">Sedang Dicari</option><option value="temu">Sudah Ketemu</option></select>
+<input id="lokasi" placeholder="Lokasi">
+<input id="wa" placeholder="WA">
+<textarea id="desk" placeholder="Deskripsi"></textarea>
 <input id="foto" type="file" accept="image/*">
 <button class="btn-blue" onclick="simpan()">Kirim Laporan</button>
 <button class="btn-gray" onclick="closeModal()">Batal</button>
 </div>
 </div>
-
 <script>
-let data=JSON.parse(localStorage.getItem('laporan_v2')||'[]');
-let fStatus='all', fJenis='all';
+let data=JSON.parse(localStorage.getItem('laporan_v2')||'[]');let fStatus='all';
 function openModal(){document.getElementById('modal').classList.add('show')}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 function simpan(){
  const judul=document.getElementById('judul').value.trim();
- const lokasi=document.getElementById('lokasi').value.trim();
- if(!judul){alert('Isi judul dulu KING!');return;}
- let item={id:Date.now(),judul,jenis:document.getElementById('jenis').value,status:document.getElementById('status').value,lokasi,wa:document.getElementById('wa').value,desk:document.getElementById('desk').value,foto:'',tgl:new Date().toLocaleDateString('id-ID')};
+ if(!judul){alert('Isi judul!');return;}
+ let item={id:Date.now(),judul,jenis:document.getElementById('jenis').value,status:document.getElementById('status').value,lokasi:document.getElementById('lokasi').value,wa:document.getElementById('wa').value,desk:document.getElementById('desk').value,foto:'',tgl:new Date().toLocaleDateString('id-ID')};
  const file=document.getElementById('foto').files[0];
- if(file){
-  const r=new FileReader();
-  r.onload=e=>{item.foto=e.target.result;push(item);};
-  r.readAsDataURL(file);
- }else{push(item);}
+ if(file){const r=new FileReader();r.onload=e=>{item.foto=e.target.result;push(item);};r.readAsDataURL(file);}else{push(item);}
 }
-function push(item){
- data.unshift(item);
- localStorage.setItem('laporan_v2',JSON.stringify(data));
- closeModal();
- render();
- document.getElementById('judul').value='';document.getElementById('lokasi').value='';document.getElementById('desk').value='';
- alert('BERHASIL KING! Laporan masuk! 0 jadi '+data.length+'!');
-}
+function push(item){data.unshift(item);localStorage.setItem('laporan_v2',JSON.stringify(data));closeModal();render();alert('Berhasil!');}
 function render(){
  const q=document.getElementById('q').value.toLowerCase();
- let filtered=data.filter(d=>{
-  const matchQ=(d.judul+d.lokasi+d.desk+d.jenis).toLowerCase().includes(q);
-  const matchS=fStatus=='all'||d.status==fStatus;
-  const matchJ=fJenis=='all'||d.jenis==fJenis;
-  return matchQ&&matchS&&matchJ;
- });
- document.getElementById('t0').innerText=data.length;
- document.getElementById('t1').innerText=data.filter(d=>d.status=='hilang').length;
- document.getElementById('t2').innerText=data.filter(d=>d.status=='temu').length;
- document.getElementById('list').innerHTML=filtered.length?filtered.map(d=>`
- <div class="item">
-  ${d.foto?`<img src="${d.foto}">`:`<div style="width:70px;height:70px;background:#334155;border-radius:10px;display:grid;place-items:center">📦</div>`}
-  <div style="flex:1">
-   <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><span class="badge ${d.status=='hilang'?'b-hilang':'b-temu'}">${d.status=='hilang'?'Sedang Dicari':'Sudah Ketemu'}</span><small style="color:#94a3b8">${d.tgl}</small></div>
-   <b>${d.judul}</b><br><small style="color:#94a3b8">📍 ${d.lokasi||'-'} • ${d.jenis}</small><br><small>${d.desk||''}</small>${d.wa?`<br><small style="color:#60a5fa">WA: ${d.wa}</small>`:''}
-  </div>
- </div>`).join(''):`<div style="text-align:center;color:#64748b;margin-top:50px"><div style="font-size:40px">📭</div><p>Belum ada laporan.</p><p>Klik + Lapor untuk menambah.</p></div>`;
+ let filtered=data.filter(d=>{const mq=(d.judul+d.lokasi+d.desk).toLowerCase().includes(q);const ms=fStatus=='all'||d.status==fStatus;return mq&&ms;});
+ document.getElementById('t0').innerText=data.length;document.getElementById('t1').innerText=data.filter(d=>d.status=='hilang').length;document.getElementById('t2').innerText=data.filter(d=>d.status=='temu').length;
+ document.getElementById('list').innerHTML=filtered.length?filtered.map(d=>`<div class="item">${d.foto?`<img src="${d.foto}">`:`<div style="width:70px;height:70px;background:#334155;border-radius:10px;display:grid;place-items:center">📦</div>`}<div><div><span class="badge ${d.status=='hilang'?'b-hilang':'b-temu'}">${d.status=='hilang'?'Dicari':'Ketemu'}</span> <small>${d.tgl}</small></div><b>${d.judul}</b><br><small>📍 ${d.lokasi} • ${d.jenis}</small><br><small>${d.desk}</small></div></div>`).join(''):`<p style="text-align:center;color:#64748b;margin-top:40px">Belum ada laporan</p>`;
 }
 function filterStatus(el,s){fStatus=s;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render();}
-function filterJenis(el,s){fJenis=s;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render();}
-document.getElementById('q').addEventListener('input',render);
-render();
-console.log('PRO FIX LOADED KING - Tombol Lapor Aktif!');
+document.getElementById('q').addEventListener('input',render);render();
 </script>
 </body>
-                                                                        </html>
+</html>
